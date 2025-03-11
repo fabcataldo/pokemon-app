@@ -19,6 +19,7 @@ export interface Pokemon {
   stats: Stat[];
   types: Type[];
   weight: number;
+  color: string;
 }
 
 export interface Ability {

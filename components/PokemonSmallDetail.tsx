@@ -1,7 +1,7 @@
 import { View, Text, Pressable, Image, FlatList } from "react-native";
 import React from "react";
 import { Pokemon } from "../models/Pokemon";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import CustomSegment from "./CustomSegment";
 
 interface Props {
@@ -9,44 +9,46 @@ interface Props {
 }
 
 const PokemonSmallDetail = ({ pokemon }: Props) => {
+  const router = useRouter();
   return (
-    <Link
-      href={{
-        pathname: `/details`,
-        params: { pokemon: JSON.stringify(pokemon) },
-      }}
+    <Pressable
+      className="active:opacity-70 border border-black active:border-white/50 mb-2 p-4 rounded-xl bg-slate-500/10"
+      onPress={() =>
+        router.push({
+          pathname: "/details",
+          params: { pokemon: JSON.stringify(pokemon) }, // 🔥 Pasamos el objeto como string
+        })
+      }
     >
-      <Pressable className="active:opacity-70 border border-black active:border-white/50 mb-2 p-4 rounded-xl bg-slate-500/10">
-        <View key={pokemon.name} className="flex-row gap-4">
-          <View>
-            <Text className="mb-1">{pokemon.name}</Text>
-            {pokemon.types && pokemon.types.length ? (
-              <FlatList
-                data={pokemon.types}
-                keyExtractor={(pokemon) => pokemon.type.url}
-                renderItem={({ item, index }) => (
-                  <CustomSegment
-                    text={item.type.name}
-                    key={index}
-                  ></CustomSegment>
-                )}
-              ></FlatList>
-            ) : (
-              <View>
-                <Text>This pokemon does not have any type</Text>
-              </View>
-            )}
-          </View>
-          <View className="flex-shrink">
-            <Image
-              source={{
-                uri: pokemon.sprites.other?.["official-artwork"].front_default,
-              }}
-            ></Image>
-          </View>
+      <View key={pokemon.name} className="flex-row gap-4">
+        <View>
+          <Text className="mb-1">{pokemon.name}</Text>
+          {pokemon.types && pokemon.types.length ? (
+            <FlatList
+              data={pokemon.types}
+              keyExtractor={(pokemon) => pokemon.type.url}
+              renderItem={({ item, index }) => (
+                <CustomSegment
+                  text={item.type.name}
+                  key={index}
+                ></CustomSegment>
+              )}
+            ></FlatList>
+          ) : (
+            <View>
+              <Text>This pokemon does not have any type</Text>
+            </View>
+          )}
         </View>
-      </Pressable>
-    </Link>
+        <View className="flex-shrink">
+          <Image
+            source={{
+              uri: pokemon.sprites.other?.["official-artwork"].front_default,
+            }}
+          ></Image>
+        </View>
+      </View>
+    </Pressable>
   );
 };
 

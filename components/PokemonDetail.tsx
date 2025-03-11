@@ -1,6 +1,13 @@
-import { View, Text, FlatList, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ScrollView,
+  Image,
+  Pressable,
+} from "react-native";
 import React from "react";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { Pokemon } from "../models/Pokemon";
 import CustomSegment from "./CustomSegment";
 import Screen from "./Screen";
@@ -10,15 +17,23 @@ interface Props {
 }
 
 const PokemonDetail = ({ pokemon }: Props) => {
-  const { id } = useLocalSearchParams();
-
+  const router = useRouter();
   return (
     <Screen>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#ffee00" },
-          headerTintColor: "black",
+          headerStyle: { backgroundColor: pokemon.color },
+          headerTintColor: "white",
           headerTitle: pokemon?.name ? pokemon.name : "Pokemon Detail",
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                router.back(); // Volver a la pantalla anterior
+              }}
+            >
+              <Text style={{ color: "yellow", padding: 10 }}>🔙 Back</Text>
+            </Pressable>
+          ),
         }}
       ></Stack.Screen>
       <View className="flex-1 justify-center items-center">

@@ -14,12 +14,21 @@ const PokemonsList = () => {
     useState<GetPokemonsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const getPokemonFromAPI = async (url: string) => {
+  const getPokemonFromAPI = async (urlDetail: string, urlColor: string) => {
     try {
-      const response = await getPokemon(url);
+      const responseDetail = await (
+        await getPokemon(urlDetail, urlColor)
+      ).promisePokemonDetail;
 
-      if (response) {
-        return response;
+      const responseColor = await (
+        await getPokemon(urlDetail, urlColor)
+      ).promisePokemonColor;
+
+      if (responseDetail && responseColor) {
+        return {
+          responseDetail,
+          responseColor,
+        };
       }
     } catch (error: any) {
       //PONER UN ALERT ACA
@@ -36,9 +45,13 @@ const PokemonsList = () => {
 
       if (response && Array.isArray(response.results)) {
         for (const elementResult of response.results) {
-          const pokemon: Pokemon = await getPokemonFromAPI(elementResult.url);
-          if (pokemon) {
-            elementResult.detail = pokemon;
+          const pokemon = await getPokemonFromAPI(
+            elementResult.url,
+            elementResult.url.slice(elementResult.url.length - 1)
+          );
+          if (pokemon && pokemon.responseDetail && pokemon.responseColor) {
+            elementResult.detail = pokemon.responseDetail;
+            elementResult.detail.color = pokemon.responseColor;
           }
         }
         setPokemonsFromAPI(response);

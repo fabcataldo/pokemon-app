@@ -6,7 +6,15 @@ export async function getPokemons() {
   return processRequest.get();
 }
 
-export async function getPokemon(urlPokemon: string) {
-  processRequest.url = urlPokemon;
-  return processRequest.get();
+export async function getPokemon(urlDetail: string, idPokemon: string) {
+  processRequest.url = urlDetail;
+  const promisePokemonDetail = processRequest.get();
+
+  processRequest.url = `https://pokeapi.co/api/v2/pokemon-color/${idPokemon}`;
+  const promisePokemonColor = processRequest.get();
+
+  return {
+    promisePokemonDetail,
+    promisePokemonColor,
+  };
 }

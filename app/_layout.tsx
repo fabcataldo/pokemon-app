@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../layout/Header";
+
 import { Stack } from "expo-router";
 
 const _layout = () => {
@@ -11,7 +11,10 @@ const _layout = () => {
         headerTintColor: "#FACC15", // Color del texto del header
         headerTitleStyle: { fontWeight: "bold" },
       }}
-    ></Stack>
+    >
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="details" options={{ headerShown: true }} />
+    </Stack>
   );
 };
 
