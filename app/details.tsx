@@ -1,0 +1,12 @@
+import React from "react";
+import PokemonDetail from "../components/PokemonDetail";
+import { useLocalSearchParams } from "expo-router";
+import { Pokemon } from "../models/Pokemon";
+
+const DetailsScreen = () => {
+  const params = useLocalSearchParams();
+  const realPokemon: Pokemon = JSON.parse(params.hero as string);
+  return <PokemonDetail pokemon={realPokemon} />;
+};
+
+export default DetailsScreen;
