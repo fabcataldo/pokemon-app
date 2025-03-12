@@ -1,7 +1,7 @@
 import { View, Text, Pressable, Image, FlatList } from "react-native";
 import React from "react";
 import { Pokemon } from "../models/Pokemon";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import CustomSegment from "./CustomSegment";
 
 interface Props {
@@ -12,11 +12,11 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
   const router = useRouter();
   return (
     <Pressable
-      className="active:opacity-70 border border-black active:border-white/50 mb-2 p-4 rounded-xl bg-slate-500/10"
+      className="border border-black active:border-white/50 mb-2 p-4 rounded-xl bg-slate-500/10"
       onPress={() =>
         router.push({
           pathname: "/details",
-          params: { pokemon: JSON.stringify(pokemon) }, // 🔥 Pasamos el objeto como string
+          params: { pokemon: JSON.stringify(pokemon) },
         })
       }
     >
@@ -40,8 +40,10 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
             </View>
           )}
         </View>
-        <View className="flex-shrink">
+        <View>
           <Image
+            className="mb-4 rounded"
+            style={{ width: 200, height: 200 }}
             source={{
               uri: pokemon.sprites.other?.["official-artwork"].front_default,
             }}

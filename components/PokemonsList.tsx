@@ -39,19 +39,28 @@ const PokemonsList = () => {
     }
   };
 
+  const getPokemonIdFromURL = (url: string): string | null => {
+    const evaluatorMatches = url.match(/\/(\d+)\/$/);
+    return evaluatorMatches ? evaluatorMatches[1] : null;
+  };
+
   const getPokemonsFromAPI = async () => {
     try {
       const response: GetPokemonsResponse = await getPokemons();
 
       if (response && Array.isArray(response.results)) {
         for (const elementResult of response.results) {
-          const pokemon = await getPokemonFromAPI(
-            elementResult.url,
-            elementResult.url.slice(elementResult.url.length - 1)
-          );
-          if (pokemon && pokemon.responseDetail && pokemon.responseColor) {
-            elementResult.detail = pokemon.responseDetail;
-            elementResult.detail.color = pokemon.responseColor;
+          const pokemonId = getPokemonIdFromURL(elementResult.url);
+
+          if (pokemonId) {
+            const pokemon = await getPokemonFromAPI(
+              elementResult.url,
+              pokemonId
+            );
+            if (pokemon && pokemon.responseDetail && pokemon.responseColor) {
+              elementResult.detail = pokemon.responseDetail;
+              elementResult.detail.color = pokemon.responseColor;
+            }
           }
         }
         setPokemonsFromAPI(response);

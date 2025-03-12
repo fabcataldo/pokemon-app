@@ -19,7 +19,7 @@ export interface Pokemon {
   stats: Stat[];
   types: Type[];
   weight: number;
-  color: string;
+  color: PokemonColor;
 }
 
 export interface Ability {
@@ -176,4 +176,21 @@ export interface Stat {
 export interface Type {
   slot: number;
   type: Species;
+}
+
+export interface PokemonColor {
+  id: number;
+  name: string;
+  names: Name[];
+  pokemon_species: PokemonSpecy[];
+}
+
+export interface Name {
+  language: PokemonSpecy;
+  name: string;
+}
+
+export interface PokemonSpecy {
+  name: string;
+  url: string;
 }
