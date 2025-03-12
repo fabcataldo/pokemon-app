@@ -14,6 +14,8 @@ Asegúrate de tener instalados:
 - [Android Studio](https://developer.android.com/studio)
 - [Xcode]()
 
+(Android Studio y JDK son para correr la app en Android)
+
 ### 1 **Clonar el repositorio**
 
 ```sh
