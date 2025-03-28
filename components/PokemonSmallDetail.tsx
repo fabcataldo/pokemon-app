@@ -1,8 +1,8 @@
-import { View, Text, Pressable, Image, FlatList } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import React from "react";
 import { Pokemon } from "../models/Pokemon";
 import { useRouter } from "expo-router";
-import CustomSegment from "./CustomSegment";
+import PokemonTypes from "./PokemonTypes";
 
 interface Props {
   pokemon: Pokemon;
@@ -10,9 +10,14 @@ interface Props {
 
 const PokemonSmallDetail = ({ pokemon }: Props) => {
   const router = useRouter();
+
   return (
     <Pressable
-      className="border border-black active:border-white/50 mb-2 p-4 rounded-xl bg-slate-500/10"
+      style={{
+        backgroundColor: pokemon.color.name,
+      }}
+      className={`border border-black
+         active:border-white/50 mb-2 p-4 rounded-xl`}
       onPress={() =>
         router.push({
           pathname: "/details",
@@ -20,27 +25,25 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
         })
       }
     >
-      <View key={pokemon.name} className="flex-row gap-4">
-        <View>
-          <Text className="mb-1">{pokemon.name}</Text>
-          {pokemon.types && pokemon.types.length ? (
-            <FlatList
-              data={pokemon.types}
-              keyExtractor={(pokemon) => pokemon.type.url}
-              renderItem={({ item, index }) => (
-                <CustomSegment
-                  text={item.type.name}
-                  key={index}
-                ></CustomSegment>
-              )}
-            ></FlatList>
-          ) : (
-            <View>
-              <Text>This pokemon does not have any type</Text>
-            </View>
-          )}
+      <View
+        key={pokemon.name}
+        className="flex-row gap-4 justify-between w-full"
+      >
+        <View className="flex-col w-[40%]">
+          <Text
+            className={`mb-2 text-2xl capitalize ${
+              pokemon.color.name.includes("black") ||
+              pokemon.color.name.includes("blue") ||
+              pokemon.color.name.includes("brown")
+                ? "text-white"
+                : "text-black"
+            }`}
+          >
+            {pokemon.name}
+          </Text>
+          <PokemonTypes pokemon={pokemon} />
         </View>
-        <View>
+        <View className="flex-col w-[60%]">
           <Image
             className="mb-4 rounded"
             style={{ width: 200, height: 200 }}

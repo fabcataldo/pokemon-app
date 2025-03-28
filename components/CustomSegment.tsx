@@ -8,7 +8,19 @@ interface Props {
 
 const CustomSegment = ({ text, customColor }: Props) => {
   return (
-    <View className="border-2 border-solid border-white rounded-xl p-1.5 h-10 mr-2">
+    <View
+      style={{
+        borderColor: `${
+          !!customColor &&
+          (customColor === "black" ||
+            customColor === "blue" ||
+            customColor === "brown")
+            ? "white"
+            : "black"
+        }`,
+      }}
+      className="border-2 border-solid rounded-xl p-1.5 h-10 mr-2"
+    >
       <Text
         className={`${
           !!customColor &&
