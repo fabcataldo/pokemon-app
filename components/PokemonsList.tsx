@@ -1,11 +1,7 @@
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import { Text, ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import {
-  GetPokemonsResponse,
-  GetPokemonsResponseResult,
-} from "../models/GetPokemonsResponse";
+import { GetPokemonsResponse } from "../models/GetPokemonsResponse";
 import { getPokemon, getPokemons } from "../services/ApiService";
-import { Pokemon } from "../models/Pokemon";
 import AnimatedPokemonCard from "./AnimatedPokemonCard";
 import Screen from "./Screen";
 
