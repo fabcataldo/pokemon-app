@@ -81,7 +81,9 @@ const PokemonsList = () => {
 
   return (
     <Screen>
-      <Text>Pokedex</Text>
+      <Text className="mt-8 mb-5 text-3xl font-bold color-black-900">
+        Pokedex
+      </Text>
       {pokemonsFromAPI && pokemonsFromAPI.results.length === 0 ? (
         <ActivityIndicator></ActivityIndicator>
       ) : (
