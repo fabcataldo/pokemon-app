@@ -7,8 +7,9 @@ const _layout = () => {
     <Stack
       screenOptions={{
         headerShown: false,
-        headerStyle: { backgroundColor: "#1E293B" }, // Fondo del header
-        headerTintColor: "#FACC15", // Color del texto del header
+        headerShadowVisible: false,
+        headerStyle: { backgroundColor: "#1E293B" },
+        headerTintColor: "#FACC15",
         headerTitleStyle: { fontWeight: "bold" },
       }}
     >
