@@ -17,7 +17,7 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
         backgroundColor: pokemon.color.name,
       }}
       className={`border border-black
-         active:border-white/50 mb-2 p-4 rounded-xl`}
+         active:border-white/50 mb-5 p-4 rounded-xl`}
       onPress={() =>
         router.push({
           pathname: "/details",
@@ -45,7 +45,7 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
         </View>
         <View className="flex-col w-[60%]">
           <Image
-            className="mb-4 rounded"
+            className=""
             style={{ width: 200, height: 200 }}
             source={{
               uri: pokemon.sprites.other?.["official-artwork"].front_default,

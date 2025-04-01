@@ -7,20 +7,17 @@ interface Props {
   pokemon: Pokemon;
   defaultTypeColor?: string;
 }
-const PokemonTypes = ({ pokemon, defaultTypeColor = "" }: Props) => {
+const PokemonTypes = ({ pokemon }: Props) => {
   return (
     <>
       {pokemon.types && pokemon.types.length ? (
         <FlatList
+          className="mt-2"
           data={pokemon.types}
           keyExtractor={(pokemon) => pokemon.type.url}
           horizontal={true}
           renderItem={({ item, index }) => (
-            <CustomSegment
-              text={item.type.name}
-              key={index}
-              customColor={defaultTypeColor || pokemon.color.name}
-            ></CustomSegment>
+            <CustomSegment text={item.type.name} key={index}></CustomSegment>
           )}
         ></FlatList>
       ) : (

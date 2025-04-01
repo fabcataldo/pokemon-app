@@ -13,7 +13,7 @@ interface Props {
 const PokemonDetail = ({ pokemon }: Props) => {
   const router = useRouter();
   return (
-    <Screen>
+    <Screen backgroundColor={pokemon.color.name}>
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: pokemon.color.name },
@@ -27,36 +27,59 @@ const PokemonDetail = ({ pokemon }: Props) => {
               onPress={() => router.back()}
             />
           ),
+          title: "",
         }}
       ></Stack.Screen>
 
       <View className="flex-col items-start">
-        <Text className="text-center text-black font-bold text-xl capitalize">
+        <Text className="text-center text-white font-bold text-3xl capitalize">
           {pokemon.name}
         </Text>
 
-        <PokemonTypes pokemon={pokemon} defaultTypeColor="white" />
-
-        <View className="pt-10 w-[400px]">
-          <View className="border-b-2 border-solid border-gray-300">
-            <Text>Experience: {pokemon.base_experience}</Text>
-          </View>
-          <View className="border-b-2 border-solid border-gray-300">
-            <Text>Height: {pokemon.height}</Text>
-          </View>
-          <View className="border-b-2 border-solid border-gray-300">
-            <Text>Weight: {pokemon.weight}</Text>
-          </View>
-        </View>
-
-        <Image
-          className="mb-4 rounded"
-          source={{
-            uri: pokemon.sprites.other?.["official-artwork"].front_default,
-          }}
-          style={{ width: 400, height: 400 }}
-        ></Image>
+        <PokemonTypes pokemon={pokemon} />
       </View>
+
+      <View
+        className="mt-10 flex flex-row justify-between items-center self-center
+       border-b-2 border-solid border-gray-300 w-[80%] pb-3
+      "
+      >
+        <View>
+          <Text className=" text-white">Experience</Text>
+        </View>
+        <View>
+          <Text className=" text-white">{pokemon.base_experience}</Text>
+        </View>
+      </View>
+
+      <View
+        className="mt-3 flex flex-row justify-between items-center self-center
+      border-b-2 border-solid border-gray-300 w-[80%] pb-3
+      "
+      >
+        <View>
+          <Text className=" text-white">Height</Text>
+        </View>
+        <View>
+          <Text className=" text-white">{pokemon.height}</Text>
+        </View>
+      </View>
+
+      <View className="mt-3 flex flex-row justify-between items-center self-center w-[80%] mb-7">
+        <View>
+          <Text className=" text-white">Weight</Text>
+        </View>
+        <View>
+          <Text className=" text-white">{pokemon.weight}</Text>
+        </View>
+      </View>
+
+      <Image
+        source={{
+          uri: pokemon.sprites.other?.["official-artwork"].front_default,
+        }}
+        style={{ width: 400, height: 400 }}
+      ></Image>
     </Screen>
   );
 };

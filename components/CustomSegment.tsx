@@ -3,36 +3,15 @@ import React from "react";
 
 interface Props {
   text: string;
-  customColor: string;
 }
 
-const CustomSegment = ({ text, customColor }: Props) => {
+const CustomSegment = ({ text }: Props) => {
   return (
     <View
-      style={{
-        borderColor: `${
-          !!customColor &&
-          (customColor === "black" ||
-            customColor === "blue" ||
-            customColor === "brown")
-            ? "white"
-            : "black"
-        }`,
-      }}
+      style={{ borderColor: "white" }}
       className="border-2 border-solid rounded-xl p-1.5 h-10 mr-2"
     >
-      <Text
-        className={`${
-          !!customColor &&
-          (customColor === "black" ||
-            customColor === "blue" ||
-            customColor === "brown")
-            ? "text-white"
-            : "text-black"
-        }`}
-      >
-        {text}
-      </Text>
+      <Text className={`text-white capitalize max-w-xl`}>{text}</Text>
     </View>
   );
 };
