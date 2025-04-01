@@ -1,17 +1,7 @@
 export default class ProcessRequest {
-  private _url = "";
-
-  public get url(): string {
-    return this._url;
-  }
-
-  public set url(pUrl) {
-    this._url = pUrl;
-  }
-
-  async get() {
+  static async get(url: string) {
     try {
-      const response = await fetch(this.url);
+      const response = await fetch(url);
 
       if (response) {
         try {
