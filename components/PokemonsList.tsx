@@ -11,22 +11,24 @@ import {
 } from "../services/ApiService";
 import AnimatedPokemonCard from "./AnimatedPokemonCard";
 import Screen from "./Screen";
+import { usePokemons } from "@/hooks/usePokemons";
 
 const possiblePokemonColors = new Array(10).fill(null).map((_, i) => i + 1);
+
 const PokemonsList = () => {
-  const [pokemonsFromAPI, setPokemonsFromAPI] =
-    useState<GetPokemonsResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [totalPokemons, setTotalPokemons] = useState<number>(0);
   const [pokemons, setPokemons] = useState<GetPokemonsResponseResult[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const { data: allPokemonsFromAPI, isLoading } = usePokemons(
+    currentPage,
+    pageSize
+  );
 
   const getPokemonFromAPI = async (urlDetail: string, urlColor: string) => {
     try {
-      const responseDetail = await (
-        await getPokemon(urlDetail, urlColor)
-      ).promisePokemonDetail;
+      const responseDetail = await getPokemon(urlDetail);
 
       let responseColor;
 
@@ -70,15 +72,11 @@ const PokemonsList = () => {
   };
 
   const getPokemonsFromAPI = async () => {
+    console.log("allPokemonsFromAPI");
+    console.log(allPokemonsFromAPI);
     try {
-      const response: GetPokemonsResponse = await getPokemons(
-        currentPage,
-        pageSize
-      );
-
-      if (response && Array.isArray(response.results)) {
-        setTotalPokemons(response.count);
-        for (const elementResult of response.results) {
+      if (allPokemonsFromAPI && Array.isArray(allPokemonsFromAPI.results)) {
+        for (const elementResult of allPokemonsFromAPI.results) {
           const pokemonId = getPokemonIdFromURL(elementResult.url);
 
           if (pokemonId) {
@@ -92,7 +90,10 @@ const PokemonsList = () => {
             }
           }
         }
-        setPokemonsFromAPI(response);
+        setPokemons([...pokemons, ...allPokemonsFromAPI.results]);
+
+        console.log("pokemons");
+        console.log(pokemons);
       } else {
         //PONER UN ALERT ACA
         throw new Error("La respuesta falló");
@@ -105,21 +106,17 @@ const PokemonsList = () => {
   };
 
   useEffect(() => {
-    getPokemonsFromAPI();
-  }, [currentPage]);
-
-  useEffect(() => {
-    if (!!pokemonsFromAPI) {
-      setPokemons([...pokemons, ...pokemonsFromAPI.results]);
+    if (allPokemonsFromAPI && currentPage === 0) {
+      getPokemonsFromAPI();
     }
-  }, [pokemonsFromAPI]);
+  }, [allPokemonsFromAPI]);
 
   return (
     <Screen>
       <Text className="mt-8 mb-5 text-3xl font-bold color-black-900">
         Pokedex
       </Text>
-      {pokemonsFromAPI && pokemonsFromAPI.results.length === 0 ? (
+      {isLoading ? (
         <ActivityIndicator></ActivityIndicator>
       ) : (
         <>

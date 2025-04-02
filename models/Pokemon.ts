@@ -1,51 +1,16 @@
 export interface Pokemon {
-  abilities: Ability[];
   base_experience: number;
-  cries: Cries;
-  forms: Species[];
-  game_indices: GameIndex[];
   height: number;
-  held_items: any[];
   id: number;
-  is_default: boolean;
-  location_area_encounters: string;
-  moves: Move[];
   name: string;
-  order: number;
-  past_abilities: any[];
-  past_types: any[];
-  species: Species;
   sprites: Sprites;
-  stats: Stat[];
-  types: Type[];
   weight: number;
   color: PokemonColor;
-}
-
-export interface Ability {
-  ability: Species;
-  is_hidden: boolean;
-  slot: number;
 }
 
 export interface Species {
   name: string;
   url: string;
-}
-
-export interface Cries {
-  latest: string;
-  legacy: string;
-}
-
-export interface GameIndex {
-  game_index: number;
-  version: Species;
-}
-
-export interface Move {
-  move: Species;
-  version_group_details: VersionGroupDetail[];
 }
 
 export interface VersionGroupDetail {
