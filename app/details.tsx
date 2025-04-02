@@ -1,7 +1,7 @@
 import React from "react";
 import PokemonDetail from "../components/PokemonDetail";
 import { useLocalSearchParams } from "expo-router";
-import { Pokemon } from "../models/Pokemon";
+import { Pokemon } from "../models/PokemonDetail";
 
 const DetailsScreen = () => {
   const params = useLocalSearchParams();

@@ -13,10 +13,10 @@ interface Props {
 const PokemonDetail = ({ pokemon }: Props) => {
   const router = useRouter();
   return (
-    <Screen backgroundColor={pokemon.color.name}>
+    <Screen backgroundColor={pokemon.color}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: pokemon.color.name },
+          headerStyle: { backgroundColor: pokemon.color },
           headerTintColor: "white",
           headerLeft: ({ tintColor }) => (
             <Ionicons
@@ -76,7 +76,7 @@ const PokemonDetail = ({ pokemon }: Props) => {
 
       <Image
         source={{
-          uri: pokemon.sprites.other?.["official-artwork"].front_default,
+          uri: pokemon.img,
         }}
         style={{ width: 400, height: 400 }}
       ></Image>

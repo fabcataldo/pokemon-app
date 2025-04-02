@@ -1,24 +1,15 @@
 import { Text, ActivityIndicator, FlatList, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import {
-  GetPokemonsResponse,
-  GetPokemonsResponseResult,
-} from "../models/GetPokemonsResponse";
-import {
-  getPokemon,
-  getPokemons,
-  getPokemonColorInfo,
-} from "../services/ApiService";
 import AnimatedPokemonCard from "./AnimatedPokemonCard";
 import Screen from "./Screen";
 import { usePokemons } from "@/hooks/usePokemons";
-
-const possiblePokemonColors = new Array(10).fill(null).map((_, i) => i + 1);
+import { Pokemon } from "@/models/Pokemon";
+import { PokemonMapper } from "../utils/mappers/pokemon.mapper";
 
 const PokemonsList = () => {
   const [pageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [pokemons, setPokemons] = useState<GetPokemonsResponseResult[]>([]);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const { data: allPokemonsFromAPI, isLoading } = usePokemons(
@@ -26,74 +17,27 @@ const PokemonsList = () => {
     pageSize
   );
 
-  const getPokemonFromAPI = async (urlDetail: string, urlColor: string) => {
-    try {
-      const responseDetail = await getPokemon(urlDetail);
-
-      let responseColor;
-
-      for (const idColor of possiblePokemonColors) {
-        const tmpResponse = await getPokemonColorInfo(idColor);
-
-        if (tmpResponse) {
-          const colorInPokemon = tmpResponse.pokemon_species.find(
-            (pok: any) => pok.name === responseDetail.name
-          );
-          if (colorInPokemon) {
-            responseColor = {
-              id: tmpResponse.id,
-              name: tmpResponse.name,
-              names: tmpResponse.names,
-              pokemon_species: [colorInPokemon],
-            };
-            break;
-          }
-        }
-      }
-
-      if (responseDetail && responseColor) {
-        return {
-          responseDetail,
-          responseColor,
-        };
-      }
-    } catch (error: any) {
-      //PONER UN ALERT ACA
-      console.error("getPokemon error:", error);
-      setError(
-        error.message || "Ocurrió un error al obtener el detalle del pokemon."
-      );
-    }
-  };
-
-  const getPokemonIdFromURL = (url: string): string | null => {
-    const evaluatorMatches = url.match(/\/(\d+)\/$/);
-    return evaluatorMatches ? evaluatorMatches[1] : null;
-  };
-
   const getPokemonsFromAPI = async () => {
     console.log("allPokemonsFromAPI");
     console.log(allPokemonsFromAPI);
     try {
       if (allPokemonsFromAPI && Array.isArray(allPokemonsFromAPI.results)) {
+        let finalPokemons = [];
         for (const elementResult of allPokemonsFromAPI.results) {
-          const pokemonId = getPokemonIdFromURL(elementResult.url);
+          const finalPokemon: Pokemon = await PokemonMapper.getFullPokemonInfo(
+            elementResult
+          );
 
-          if (pokemonId) {
-            const pokemon = await getPokemonFromAPI(
-              elementResult.url,
-              pokemonId
-            );
-            if (pokemon && pokemon.responseDetail && pokemon.responseColor) {
-              elementResult.detail = pokemon.responseDetail;
-              elementResult.detail.color = pokemon.responseColor;
-            }
+          if (finalPokemon) {
+            finalPokemons.push(finalPokemon);
           }
         }
-        setPokemons([...pokemons, ...allPokemonsFromAPI.results]);
 
-        console.log("pokemons");
-        console.log(pokemons);
+        if (finalPokemons.length) {
+          setPokemons([...pokemons, ...finalPokemons]);
+          console.log("pokemons");
+          console.log(pokemons);
+        }
       } else {
         //PONER UN ALERT ACA
         throw new Error("La respuesta falló");
@@ -106,10 +50,10 @@ const PokemonsList = () => {
   };
 
   useEffect(() => {
-    if (allPokemonsFromAPI && currentPage === 0) {
+    if (allPokemonsFromAPI) {
       getPokemonsFromAPI();
     }
-  }, [allPokemonsFromAPI]);
+  }, [allPokemonsFromAPI, currentPage]);
 
   return (
     <Screen>
@@ -122,9 +66,9 @@ const PokemonsList = () => {
         <>
           <FlatList
             data={pokemons}
-            keyExtractor={(pokemon) => pokemon.detail.id.toString()}
+            keyExtractor={(pokemon) => pokemon.id.toString()}
             renderItem={({ item, index }) => (
-              <AnimatedPokemonCard pokemon={item.detail} index={index} />
+              <AnimatedPokemonCard pokemon={item} index={index} />
             )}
           />
 

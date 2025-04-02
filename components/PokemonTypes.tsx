@@ -14,17 +14,19 @@ const PokemonTypes = ({ pokemon }: Props) => {
         <FlatList
           className="mt-2"
           data={pokemon.types}
-          keyExtractor={(pokemon) => pokemon.type.url}
+          keyExtractor={(type) => type.url}
           horizontal={true}
           renderItem={({ item, index }) => (
-            <CustomSegment text={item.type.name} key={index}></CustomSegment>
+            <CustomSegment text={item.name} key={index}></CustomSegment>
           )}
         ></FlatList>
       ) : (
         <View>
           <Text
             className={`mb-1 ${
-              pokemon.color.name.includes("black") ? "text-white" : "text-black"
+              pokemon.color && pokemon.color.includes("black")
+                ? "text-white"
+                : "text-black"
             }`}
           >
             This pokemon does not have any type

@@ -14,7 +14,7 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
   return (
     <Pressable
       style={{
-        backgroundColor: pokemon.color.name,
+        backgroundColor: pokemon.color,
       }}
       className={`border border-black
          active:border-white/50 mb-5 p-4 rounded-xl`}
@@ -32,9 +32,10 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
         <View className="flex-col w-[40%]">
           <Text
             className={`mb-2 text-2xl capitalize ${
-              pokemon.color.name.includes("black") ||
-              pokemon.color.name.includes("blue") ||
-              pokemon.color.name.includes("brown")
+              pokemon.color &&
+              (pokemon.color.includes("black") ||
+                pokemon.color.includes("blue") ||
+                pokemon.color.includes("brown"))
                 ? "text-white"
                 : "text-black"
             }`}
@@ -48,7 +49,7 @@ const PokemonSmallDetail = ({ pokemon }: Props) => {
             className=""
             style={{ width: 200, height: 200 }}
             source={{
-              uri: pokemon.sprites.other?.["official-artwork"].front_default,
+              uri: pokemon.img,
             }}
           ></Image>
         </View>
