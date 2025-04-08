@@ -1,5 +1,12 @@
-import { Text, ActivityIndicator, FlatList, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  Text,
+  ActivityIndicator,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  View,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import AnimatedPokemonCard from "./AnimatedPokemonCard";
 import Screen from "./Screen";
 import { usePokemons } from "@/hooks/usePokemons";
@@ -7,82 +14,80 @@ import { Pokemon } from "@/models/Pokemon";
 import { PokemonMapper } from "../utils/mappers/pokemon.mapper";
 
 const PokemonsList = () => {
-  const [pageSize] = useState<number>(10);
-  const [currentPage, setCurrentPage] = useState<number>(0);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const { data: allPokemonsFromAPI, isLoading } = usePokemons(
-    currentPage,
-    pageSize
-  );
+  const { allPokemonsQuery } = usePokemons();
+  const isLoading = useRef(false);
 
   const getPokemonsFromAPI = async () => {
-    console.log("allPokemonsFromAPI");
-    console.log(allPokemonsFromAPI);
     try {
-      if (allPokemonsFromAPI && Array.isArray(allPokemonsFromAPI.results)) {
-        let finalPokemons = [];
-        for (const elementResult of allPokemonsFromAPI.results) {
-          const finalPokemon: Pokemon = await PokemonMapper.getFullPokemonInfo(
-            elementResult
-          );
+      if (allPokemonsQuery.data) {
+        const finalPokemons = await PokemonMapper.getFullPokemons(
+          allPokemonsQuery.data
+        );
 
-          if (finalPokemon) {
-            finalPokemons.push(finalPokemon);
-          }
-        }
-
-        if (finalPokemons.length) {
-          setPokemons([...pokemons, ...finalPokemons]);
-          console.log("pokemons");
-          console.log(pokemons);
+        if (finalPokemons) {
+          setPokemons(finalPokemons);
         }
       } else {
-        //PONER UN ALERT ACA
         throw new Error("La respuesta falló");
       }
     } catch (error: any) {
-      //PONER UN ALERT ACA
       console.error("getPokemons error:", error);
       setError(error.message || "Ocurrió un error al obtener los pokemons.");
     }
   };
 
   useEffect(() => {
-    if (allPokemonsFromAPI) {
+    if (allPokemonsQuery.data) {
       getPokemonsFromAPI();
     }
-  }, [allPokemonsFromAPI, currentPage]);
+    setTimeout(() => {
+      isLoading.current = false;
+    }, 200);
+  }, [allPokemonsQuery.data]);
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (isLoading.current) return;
+
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+
+    const isEndReached =
+      contentOffset.y + layoutMeasurement.height + 600 >= contentSize.height;
+
+    if (!isEndReached) return;
+
+    isLoading.current = true;
+
+    allPokemonsQuery.fetchNextPage && allPokemonsQuery.fetchNextPage();
+  };
+
+  if (allPokemonsQuery.isLoading) {
+    return (
+      <View className="flex flex-1 justify-center items-center">
+        <Text className="mb-4">Espere por favor</Text>
+        <ActivityIndicator color="purple" size={30} />
+      </View>
+    );
+  }
 
   return (
     <Screen>
       <Text className="mt-8 mb-5 text-3xl font-bold color-black-900">
         Pokedex
       </Text>
-      {isLoading ? (
-        <ActivityIndicator></ActivityIndicator>
-      ) : (
-        <>
-          <FlatList
-            data={pokemons}
-            keyExtractor={(pokemon) => pokemon.id.toString()}
-            renderItem={({ item, index }) => (
-              <AnimatedPokemonCard pokemon={item} index={index} />
-            )}
-          />
 
-          <Pressable
-            className={`border border-black bg-blue-500
-                 active:border-white/50:bg-blue-200 mb-5 p-4 rounded-xl`}
-            onPress={() => {
-              setCurrentPage(currentPage + 10);
-            }}
-          >
-            <Text className="text-white text-center">See more</Text>
-          </Pressable>
-        </>
-      )}
+      <>
+        <FlatList
+          data={pokemons}
+          keyExtractor={(pokemon, i) => `${pokemon.id.toString()}-${i}`}
+          renderItem={({ item, index }) => (
+            <AnimatedPokemonCard pokemon={item} index={index} />
+          )}
+          onScroll={onScroll}
+        />
+      </>
     </Screen>
   );
 };

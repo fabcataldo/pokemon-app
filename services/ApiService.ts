@@ -1,6 +1,9 @@
 import ProcessRequest from "./ProcessRequest";
 
-export async function getPokemons(currentPageOffset: number, pageSize: number) {
+export async function getPokemons(
+  currentPageOffset: number,
+  pageSize: number = 10
+) {
   return await ProcessRequest.get(
     `https://pokeapi.co/api/v2/pokemon/?offset=${currentPageOffset}&limit=${pageSize}`
   );

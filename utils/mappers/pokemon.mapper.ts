@@ -6,6 +6,28 @@ import { getPokemon, getPokemonColorInfo } from "@/services/ApiService";
 const possiblePokemonColors = new Array(10).fill(null).map((_, i) => i + 1);
 
 export class PokemonMapper {
+  static getFullPokemons = async (pokemonsFromAPI: any) => {
+    const allPokemonsDataResults = pokemonsFromAPI.pages.flat();
+    let finalPokemons = [];
+
+    for (const elementResult of allPokemonsDataResults) {
+      for (const itemElementResult of elementResult.results) {
+        const finalPokemon: Pokemon = await PokemonMapper.getFullPokemonInfo(
+          itemElementResult
+        );
+
+        if (finalPokemon) {
+          finalPokemons.push(finalPokemon);
+        }
+      }
+    }
+
+    if (finalPokemons.length) {
+      return finalPokemons;
+    }
+    return [];
+  };
+
   static getPokemonIdFromURL = (url: string): string | null => {
     const evaluatorMatches = url.match(/\/(\d+)\/$/);
     return evaluatorMatches ? evaluatorMatches[1] : null;
